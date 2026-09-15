@@ -3,6 +3,8 @@ import { headers } from 'next/headers';
 import { getPublicTenantByHost } from '@/lib/tenant';
 import { getPublicVehiclesByHost } from '@/lib/vehicles';
 import RefreshOnShow from './refresh-on-show';
+import WebsiteUnavailable from '@/components/public/WebsiteUnavailable';
+import { isUnresolvedPublicHostError } from '@/lib/incidents';
 
 export const dynamic = 'force-dynamic';
 
@@ -45,6 +47,9 @@ export default async function InventoryPage({
 
   try {
     tenant = await getPublicTenantByHost(host);
+    if (!tenant) {
+      return <WebsiteUnavailable />;
+    }
     vehicles = await getPublicVehiclesByHost(host, {
       make: make || undefined,
       model: model || undefined,
@@ -53,23 +58,14 @@ export default async function InventoryPage({
     });
   } catch (error) {
     console.error('Inventory load failed:', error);
-
+    if (isUnresolvedPublicHostError(error)) {
+      return <WebsiteUnavailable />;
+    }
     return (
       <main style={simplePageStyle}>
         <h1>Inventory unavailable</h1>
         <p>
           We could not load this dealership inventory.
-        </p>
-      </main>
-    );
-  }
-
-  if (!tenant) {
-    return (
-      <main style={simplePageStyle}>
-        <h1>Dealership Not Found</h1>
-        <p>
-          No dealership is configured for {host}.
         </p>
       </main>
     );

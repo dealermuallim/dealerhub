@@ -7,6 +7,8 @@ import {
   getPublicVehiclePhotosByHostAndId,
 } from '@/lib/vehicles';
 import VehiclePhotoGallery from '@/components/vehicle/VehiclePhotoGallery';
+import WebsiteUnavailable from '@/components/public/WebsiteUnavailable';
+import { isUnresolvedPublicHostError } from '@/lib/incidents';
 
 export const dynamic = 'force-dynamic';
 
@@ -33,12 +35,18 @@ export default async function PublicVehiclePage({
 
   try {
     tenant = await getPublicTenantByHost(host);
+    if (!tenant) {
+      return <WebsiteUnavailable />;
+    }
     vehicle = await getPublicVehicleByHostAndId(host, vehicleId);
     photos = vehicle
       ? await getPublicVehiclePhotosByHostAndId(host, vehicleId)
       : [];
   } catch (error) {
     console.error('Public vehicle page failed:', error);
+    if (isUnresolvedPublicHostError(error)) {
+      return <WebsiteUnavailable />;
+    }
     return (
       <main style={simplePageStyle}>
         <h1>Vehicle unavailable</h1>
@@ -48,7 +56,7 @@ export default async function PublicVehiclePage({
     );
   }
 
-  if (!tenant || !vehicle) {
+  if (!vehicle) {
     notFound();
   }
 

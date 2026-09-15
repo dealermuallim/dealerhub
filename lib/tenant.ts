@@ -1,6 +1,10 @@
 import oracledb from 'oracledb';
 
 import { getOracleConnection } from '@/lib/db';
+import {
+  diagnose,
+  isUnresolvedPublicHostError,
+} from '@/lib/incidents';
 
 export type PublicTenant = {
   TENANT_ID: number;
@@ -60,18 +64,35 @@ export async function getPublicTenantByHost(
       VPD
     */
 
-    await connection.execute(
-      `
-      BEGIN
-        DEALERHUB_SECURITY_PKG.SET_PUBLIC_TENANT_BY_HOST(
-          :host
-        );
-      END;
-      `,
-      {
-        host,
-      }
-    );
+        try {
+          await connection.execute(
+            `
+          BEGIN
+            DEALERHUB_SECURITY_PKG.SET_PUBLIC_TENANT_BY_HOST(
+              :host
+            );
+          END;
+          `,
+            {
+              host,
+            }
+          );
+        } catch (error) {
+          // Expected config miss: fail closed. Never fall back to another tenant.
+          if (isUnresolvedPublicHostError(error)) {
+            const report = diagnose(error);
+            console.error('[diagnostics]', {
+              incidentId: report.incidentId,
+              matchedOn: report.matchedOn,
+              summary: report.sanitizedSummary,
+              rootCause: report.rootCause,
+              autoRepairForbidden: report.autoRepairForbidden,
+            });
+            return null;
+          }
+          // Unexpected DB/infra/programming failures stay observable.
+          throw error;
+        }
 
     /*
       TENANTS stores dealership identity.

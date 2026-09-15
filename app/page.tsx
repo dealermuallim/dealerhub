@@ -1,48 +1,31 @@
 import { headers } from 'next/headers';
 
 import { getPublicTenantByHost } from '@/lib/tenant';
+import WebsiteUnavailable from '@/components/public/WebsiteUnavailable';
 
 import TemplateRenderer from '@/components/templates/TemplateRenderer';
 
 export const dynamic = 'force-dynamic';
 
 export default async function HomePage() {
-  const requestHeaders =
-    await headers();
+  const requestHeaders = await headers();
 
   const host =
     requestHeaders.get('host') ||
     'localhost';
 
-  const tenant =
-    await getPublicTenantByHost(
-      host
-    );
+  let tenant;
+
+  try {
+    tenant = await getPublicTenantByHost(host);
+  } catch (error) {
+    // Unexpected failures: log internally; public stays neutral.
+    console.error('HomePage tenant resolve failed:', error);
+    return <WebsiteUnavailable />;
+  }
 
   if (!tenant) {
-    return (
-      <main
-        style={{
-          minHeight: '100vh',
-          display: 'grid',
-          placeItems: 'center',
-          padding: '40px',
-          fontFamily:
-            'Arial, sans-serif',
-        }}
-      >
-        <div>
-          <h1>
-            Dealer website unavailable
-          </h1>
-
-          <p>
-            No active dealership is configured
-            for this domain.
-          </p>
-        </div>
-      </main>
-    );
+    return <WebsiteUnavailable />;
   }
 
   return (

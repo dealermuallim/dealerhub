@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test:dealer": "node scripts/test-dealer-metrics.cjs && node scripts/test-upload-progress.cjs"
+    "test:dealer": "node scripts/test-dealer-metrics.cjs && node scripts/test-upload-progress.cjs && node scripts/test-reliability-ab.cjs",
+    "test:reliability": "node scripts/test-reliability-ab.cjs"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1131.0",
