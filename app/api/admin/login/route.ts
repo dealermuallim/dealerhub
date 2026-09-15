@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 
 import {
   createSessionSetCookieHeader,
-  verifyPilotCredentials,
+  resolveAdminRoleForCredentials,
 } from '@/lib/admin-auth';
 
 export async function POST(req: Request) {
@@ -18,8 +18,8 @@ export async function POST(req: Request) {
       );
     }
 
-    const valid = await verifyPilotCredentials(email, password);
-    if (!valid) {
+    const role = await resolveAdminRoleForCredentials(email, password);
+    if (!role) {
       return NextResponse.json(
         { ok: false, error: 'Invalid email or password.' },
         { status: 401 }
@@ -28,10 +28,10 @@ export async function POST(req: Request) {
 
     const setCookie = await createSessionSetCookieHeader({
       email: email.toLowerCase(),
-      role: 'admin',
+      role,
     });
 
-    const res = NextResponse.json({ ok: true });
+    const res = NextResponse.json({ ok: true, role });
     res.headers.set('Set-Cookie', setCookie);
     return res;
   } catch (error) {

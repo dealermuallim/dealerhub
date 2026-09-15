@@ -4,6 +4,7 @@ import { getOracleConnection } from '@/lib/db';
 import {
   diagnose,
   isUnresolvedPublicHostError,
+  recordIncidentOccurrence,
 } from '@/lib/incidents';
 
 export type PublicTenant = {

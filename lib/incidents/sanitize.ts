@@ -1,4 +1,11 @@
 const SECRET_PATTERNS: RegExp[] = [
+  /xox[baprs]-[A-Za-z0-9-]+/gi,
+  /sk_live_[A-Za-z0-9]+/gi,
+  /sk_test_[A-Za-z0-9]+/gi,
+  /AKIA[0-9A-Z]{16}/g,
+  /-----BEGIN (?:RSA |EC )?PRIVATE KEY-----[\s\S]*?-----END (?:RSA |EC )?PRIVATE KEY-----/gi,
+  /postgres(?:ql)?:\/\/[^\s]+/gi,
+  /mongodb(?:\+srv)?:\/\/[^\s]+/gi,
   /password\s*[=:]\s*[^\s,;]+/gi,
   /pwd\s*[=:]\s*[^\s,;]+/gi,
   /ORACLE_PASSWORD\s*[=:]\s*[^\s,;]+/gi,

@@ -39,4 +39,4 @@ Thumbs.db
 
 # Local/test uploaded vehicle images
 /public/uploads/
-/public/test-upload.jpg
+/public/test-upload.jpg\n\n# Local incident knowledge store (not Oracle)\n.data/\n

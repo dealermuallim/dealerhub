@@ -9,6 +9,8 @@ function isProtectedApi(pathname: string, method: string): boolean {
   if (pathname === '/api/test-db' && m === 'GET') return true;
   if (pathname === '/api/admin/settings' && m === 'PATCH') return true;
   if (pathname === '/api/admin/tenants' && (m === 'GET' || m === 'POST')) return true;
+  if (pathname === '/api/admin/system-health' && m === 'GET') return true;
+  if (pathname === '/api/admin/system-health/diagnostics' && m === 'POST') return true;
   if (pathname === '/api/v1/vin/decode' && m === 'POST') return true;
   if (pathname === '/api/v1/vehicles' && m === 'POST') return true;
 
@@ -71,6 +73,8 @@ export const config = {
     '/api/test-db',
     '/api/admin/settings',
     '/api/admin/tenants',
+    '/api/admin/system-health',
+    '/api/admin/system-health/diagnostics',
     '/api/v1/vin/decode',
     '/api/v1/vehicles',
     '/api/v1/vehicles/:path*',

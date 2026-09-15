@@ -4,9 +4,11 @@
  * without changing requireAdminSession call sites.
  */
 
+export type AdminRole = 'platform_admin' | 'dealer_admin';
+
 export type AdminSession = {
   email: string;
-  role: 'admin';
+  role: AdminRole;
 };
 
 export const ADMIN_SESSION_COOKIE = 'dealerhub_admin_session';
@@ -93,21 +95,68 @@ async function timingSafeEqualString(a: string, b: string): Promise<boolean> {
   return diff === 0;
 }
 
+
+function normEmail(value: string): string {
+  return value.trim().toLowerCase();
+}
+
+/** Platform admin emails: PLATFORM_ADMIN_EMAIL or fallback ADMIN_EMAIL. */
+export function getPlatformAdminEmail(): string | null {
+  const raw = process.env.PLATFORM_ADMIN_EMAIL || process.env.ADMIN_EMAIL;
+  return raw && raw.trim() ? normEmail(raw) : null;
+}
+
+export function getDealerAdminEmail(): string | null {
+  const raw = process.env.DEALER_ADMIN_EMAIL;
+  return raw && raw.trim() ? normEmail(raw) : null;
+}
+
+export function isPlatformAdminSession(
+  session: AdminSession | null | undefined
+): boolean {
+  return Boolean(session && session.role === 'platform_admin');
+}
+
+export async function requirePlatformAdminSession(
+  request: Request
+): Promise<AdminSession | null> {
+  const session = await getAdminSessionFromRequest(request);
+  if (!isPlatformAdminSession(session)) return null;
+  return session;
+}
+
+export async function resolveAdminRoleForCredentials(
+  email: string,
+  password: string
+): Promise<AdminRole | null> {
+  const incomingEmail = normEmail(email);
+
+  const platformEmail = getPlatformAdminEmail();
+  const platformPassword =
+    process.env.PLATFORM_ADMIN_PASSWORD || process.env.ADMIN_PASSWORD;
+  if (platformEmail && platformPassword) {
+    const emailOk = await timingSafeEqualString(incomingEmail, platformEmail);
+    const passwordOk = await timingSafeEqualString(password, platformPassword);
+    if (emailOk && passwordOk) return 'platform_admin';
+  }
+
+  const dealerEmail = getDealerAdminEmail();
+  const dealerPassword = process.env.DEALER_ADMIN_PASSWORD;
+  if (dealerEmail && dealerPassword) {
+    const emailOk = await timingSafeEqualString(incomingEmail, dealerEmail);
+    const passwordOk = await timingSafeEqualString(password, dealerPassword);
+    if (emailOk && passwordOk) return 'dealer_admin';
+  }
+
+  return null;
+}
+
 export async function verifyPilotCredentials(
   email: string,
   password: string
 ): Promise<boolean> {
-  const expectedEmail = process.env.ADMIN_EMAIL;
-  const expectedPassword = process.env.ADMIN_PASSWORD;
-  if (!expectedEmail || !expectedPassword) {
-    return false;
-  }
-  const emailOk = await timingSafeEqualString(
-    email.trim().toLowerCase(),
-    expectedEmail.trim().toLowerCase()
-  );
-  const passwordOk = await timingSafeEqualString(password, expectedPassword);
-  return emailOk && passwordOk;
+  const role = await resolveAdminRoleForCredentials(email, password);
+  return role !== null;
 }
 
 export async function createAdminSession(
@@ -116,7 +165,7 @@ export async function createAdminSession(
   const secret = getSessionSecret();
   const payload: SessionPayload = {
     email: identity.email,
-    role: 'admin',
+    role: identity.role,
     exp: Date.now() + SESSION_TTL_MS,
   };
   const payloadB64 = bytesToBase64Url(
@@ -149,9 +198,14 @@ export async function parseAndVerifySessionToken(
   try {
     const json = new TextDecoder().decode(base64UrlToBytes(payloadB64));
     const payload = JSON.parse(json) as SessionPayload;
-    if (!payload?.email || payload.role !== 'admin') return null;
+    if (
+      !payload?.email ||
+      (payload.role !== 'platform_admin' && payload.role !== 'dealer_admin')
+    ) {
+      return null;
+    }
     if (typeof payload.exp !== 'number' || Date.now() > payload.exp) return null;
-    return { email: payload.email, role: 'admin' };
+    return { email: payload.email, role: payload.role };
   } catch {
     return null;
   }
