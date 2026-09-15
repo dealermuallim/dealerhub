@@ -1,0 +1,42 @@
+# ============================================
+# DealerHub - Never commit secrets/local files
+# ============================================
+
+# Environment / secrets
+.env
+.env.local
+.env.*.local
+
+# Dependencies
+node_modules/
+
+# Next.js build output
+.next/
+out/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local verification / temporary work
+_browser_verify/
+tmp-dx/
+Trash/
+_job_ab_evidence.txt
+_verify_b.py
+
+# OS/editor junk
+.DS_Store
+Thumbs.db
+
+# Old/nested Git repository
+/dealer hub/
+
+# Local/test uploaded vehicle images
+/public/uploads/
+/public/test-upload.jpg
