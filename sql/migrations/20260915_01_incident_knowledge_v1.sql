@@ -1,4 +1,4 @@
--- DealerHub Reliability V1 — Incident Knowledge model
+-- DealerHub Reliability V1 - Incident Knowledge model
 -- APPLY MANUALLY after review. DO NOT auto-apply in app code.
 -- Rollback: see sql/migrations/20260915_01_incident_knowledge_v1_rollback.sql
 
@@ -67,9 +67,9 @@ CREATE TABLE DH_INCIDENT_OCCURRENCES (
 
 CREATE INDEX IX_DH_OCC_INC_SEEN ON DH_INCIDENT_OCCURRENCES (INCIDENT_ID, SEEN_AT);
 
-COMMENT ON TABLE DH_INCIDENTS IS 'Reliability V1 incident knowledge — diagnosis memory only; never auto-repair.';
-COMMENT ON COLUMN DH_INCIDENTS.FILES_REF IS 'JSON array of file paths / commit refs — never full source dumps.';
-COMMENT ON COLUMN DH_INCIDENTS.AUTO_REPAIR_FORBIDDEN IS 'Always Y — historical patch is not execution authority.';
+COMMENT ON TABLE DH_INCIDENTS IS 'Reliability V1 incident knowledge - diagnosis memory only; never auto-repair.';
+COMMENT ON COLUMN DH_INCIDENTS.FILES_REF IS 'JSON array of file paths / commit refs - never full source dumps.';
+COMMENT ON COLUMN DH_INCIDENTS.AUTO_REPAIR_FORBIDDEN IS 'Always Y - historical patch is not execution authority.';
 
 -- Seed known catalog rows (no invented occurrence timestamps/durations)
 MERGE INTO DH_INCIDENTS t

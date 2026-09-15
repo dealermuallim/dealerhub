@@ -112,4 +112,4 @@ INSERT INTO DH_BILLING_POLICIES (
 );
 
 COMMENT ON TABLE DH_BILLING_ACCOUNTS IS 'Billing state is separate from TENANTS.ACTIVE_YN';
-COMMENT ON COLUMN DH_PAYMENT_EVENTS.PROVIDER_EVENT_ID IS 'Webhook idempotency key — unique per provider';
+COMMENT ON COLUMN DH_PAYMENT_EVENTS.PROVIDER_EVENT_ID IS 'Webhook idempotency key - unique per provider';
