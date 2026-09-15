@@ -1045,6 +1045,7 @@ export default function EditVehiclePage() {
 
               <input
                 type="file"
+                  disabled={uploading}
                 multiple
                 accept=".jpg,.jpeg,.png,.webp"
                 onChange={
@@ -1264,7 +1265,7 @@ const cardStyle: React.CSSProperties = {
 const gridStyle: React.CSSProperties = {
   display: 'grid',
   gridTemplateColumns:
-    'repeat(auto-fit, minmax(220px, 1fr))',
+    'repeat(auto-fit, minmax(min(220px, 100%), 1fr))',
   gap: '18px',
 };
 

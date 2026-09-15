@@ -494,7 +494,7 @@ export default function AddVehiclePage() {
               style={{
                 ...inputStyle,
                 flex: 1,
-                minWidth: '250px',
+                minWidth: 'min(250px, 100%)',
                 background: vinLocked ? '#f1f5f9' : '#fff',
               }}
             />
@@ -1015,7 +1015,7 @@ export default function AddVehiclePage() {
 
           {/* STATUS */}
 
-          {message && (
+          {message && !error && (
             <div
               style={{
                 marginTop: '25px',
@@ -1161,7 +1161,7 @@ const inputStyle: React.CSSProperties = {
 const gridStyle: React.CSSProperties = {
   display: 'grid',
   gridTemplateColumns:
-    'repeat(auto-fit, minmax(210px, 1fr))',
+    'repeat(auto-fit, minmax(min(210px, 100%), 1fr))',
   gap: '18px',
 };
 
