@@ -1,4 +1,5 @@
 import { requireAdminSession } from '@/lib/admin-auth';
+import { denyIfDealerBillingBlocked } from '@/lib/billing/http-guard';
 import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
@@ -89,6 +90,9 @@ async function clearContextAndClose(
 export async function PATCH(req: Request,
   { params }: RouteParams
 ) {
+  const billingBlock = await denyIfDealerBillingBlocked(req, new URL(req.url).pathname);
+  if (billingBlock) return billingBlock;
+
   const adminSession = await requireAdminSession(req);
   if (!adminSession) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -312,6 +316,9 @@ export async function DELETE(
   _request: Request,
   { params }: RouteParams
 ) {
+  const billingBlock = await denyIfDealerBillingBlocked(_request, new URL(_request.url).pathname);
+  if (billingBlock) return billingBlock;
+
   const adminSession = await requireAdminSession(_request);
   if (!adminSession) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

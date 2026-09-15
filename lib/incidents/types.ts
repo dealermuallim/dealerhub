@@ -1,4 +1,13 @@
-export type IncidentId = 'INC-001' | 'INC-002' | 'INC-003' | 'INC-004';
+export type IncidentId =
+  | 'INC-001'
+  | 'INC-002'
+  | 'INC-003'
+  | 'INC-004'
+  | 'INC-005'
+  | 'INC-006'
+  | 'INC-007'
+  | 'INC-008'
+  | 'INC-009';
 
 export type KnownIncident = {
   id: IncidentId;

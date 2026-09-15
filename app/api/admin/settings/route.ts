@@ -1,4 +1,5 @@
 import { headers } from 'next/headers';
+import { denyIfDealerBillingBlocked } from '@/lib/billing/http-guard';
 import { revalidatePath } from 'next/cache';
 import { NextResponse } from 'next/server';
 import oracledb from 'oracledb';
@@ -57,6 +58,9 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
 }
 
 export async function PATCH(req: Request) {
+  const billingBlock = await denyIfDealerBillingBlocked(req, new URL(req.url).pathname);
+  if (billingBlock) return billingBlock;
+
   const adminSession = await requireAdminSession(req);
   if (!adminSession) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

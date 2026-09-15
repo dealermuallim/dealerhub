@@ -9,7 +9,8 @@
     "lint": "next lint",
     "test:dealer": "node scripts/test-dealer-metrics.cjs && node scripts/test-upload-progress.cjs && node scripts/test-reliability-ab.cjs",
     "test:reliability": "node scripts/test-reliability-ab.cjs && node scripts/test-reliability-v1.cjs",
-    "test:reliability:live": "node scripts/test-reliability-live.cjs"
+    "test:reliability:live": "node scripts/test-reliability-live.cjs",
+    "test:billing": "node scripts/test-billing-v1.cjs"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1131.0",
@@ -20,7 +21,8 @@
     "oracledb": "7.0.1",
     "pg": "^8.23.0",
     "react": "19.0.0",
-    "react-dom": "19.0.0"
+    "react-dom": "19.0.0",
+    "stripe": "^17.7.0"
   },
   "devDependencies": {
     "@types/node": "20",

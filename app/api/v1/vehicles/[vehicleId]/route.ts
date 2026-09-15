@@ -1,4 +1,5 @@
 import { requireAdminSession } from '@/lib/admin-auth';
+import { denyIfDealerBillingBlocked } from '@/lib/billing/http-guard';
 import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
 import oracledb from 'oracledb';
@@ -241,6 +242,9 @@ export async function PATCH(
     params: Promise<{ vehicleId: string }>;
   }
 ) {
+  const billingBlock = await denyIfDealerBillingBlocked(req, new URL(req.url).pathname);
+  if (billingBlock) return billingBlock;
+
   const adminSession = await requireAdminSession(req);
   if (!adminSession) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

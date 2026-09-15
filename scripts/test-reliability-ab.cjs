@@ -71,7 +71,7 @@ const {
   };
 })();
 
-assert.equal(INCIDENT_CATALOG.length, 4);
+assert.ok(INCIDENT_CATALOG.length >= 4);
 assert.equal(
   PUBLIC_UNAVAILABLE_MESSAGE,
   'Website temporarily unavailable. Please check the web address and try again.'

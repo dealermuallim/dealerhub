@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { denyIfDealerBillingBlocked } from '@/lib/billing/http-guard';
 import oracledb from 'oracledb';
 
 import { requireAdminSession } from '@/lib/admin-auth';
@@ -107,6 +108,9 @@ function actorConfigErrorResponse(error: unknown) {
 }
 
 export async function GET(req: Request) {
+  const billingBlock = await denyIfDealerBillingBlocked(req, new URL(req.url).pathname);
+  if (billingBlock) return billingBlock;
+
   const session = await requireAdminSession(req);
   if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -184,6 +188,9 @@ export async function GET(req: Request) {
 }
 
 export async function POST(req: Request) {
+  const billingBlock = await denyIfDealerBillingBlocked(req, new URL(req.url).pathname);
+  if (billingBlock) return billingBlock;
+
   const session = await requireAdminSession(req);
   if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

@@ -1,4 +1,5 @@
 import { requireAdminSession } from '@/lib/admin-auth';
+import { denyIfDealerBillingBlocked } from '@/lib/billing/http-guard';
 import { NextRequest, NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
 import { headers } from 'next/headers';
@@ -248,6 +249,9 @@ export async function POST(
   request: NextRequest,
   { params }: RouteParams
 ) {
+  const billingBlock = await denyIfDealerBillingBlocked(request, new URL(request.url).pathname);
+  if (billingBlock) return billingBlock;
+
   const adminSession = await requireAdminSession(request);
   if (!adminSession) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
