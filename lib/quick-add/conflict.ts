@@ -1,11 +1,11 @@
-import { normalizeComparable } from './normalize.ts';
+import { normalizeComparable } from './normalize';
 import {
   type DraftField,
   type FieldValue,
   type QuickAddFieldKey,
   type QuickAddFormSnapshot,
-} from './types.ts';
-import type { Proposal as DetProposal } from './deterministicParse.ts';
+} from './types';
+import type { Proposal as DetProposal } from './deterministicParse';
 
 function isEmpty(v: FieldValue | undefined): boolean {
   if (v === null || v === undefined) return true;
