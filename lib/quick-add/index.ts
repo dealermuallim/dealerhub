@@ -1,6 +1,6 @@
-import { buildDraftFields } from './conflict.ts';
-import { deterministicExtract } from './deterministicParse.ts';
-import type { ParseQuickAddInput, VoiceDraftPatch } from './types.ts';
+import { buildDraftFields } from './conflict';
+import { deterministicExtract } from './deterministicParse';
+import type { ParseQuickAddInput, VoiceDraftPatch } from './types';
 
 export type {
   VoiceDraftPatch,
@@ -9,7 +9,7 @@ export type {
   ParseQuickAddInput,
   QuickAddFieldKey,
   QuickAddFormSnapshot,
-} from './types.ts';
+} from './types';
 
 /**
  * Deterministic Quick Add: text → VoiceDraftPatch.
