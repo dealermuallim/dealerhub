@@ -1,4 +1,4 @@
-import { parseQuickAdd } from './index.ts';
+import { parseQuickAdd } from './index';
 
 type Check = { name: string; ok: boolean; detail?: string };
 

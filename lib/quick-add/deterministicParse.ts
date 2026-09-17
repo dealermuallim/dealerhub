@@ -1,11 +1,11 @@
-import { normalizeQuickAddText, titleCaseColor, collapseSpaces } from './normalize.ts';
-import { parseDigits, parseNumberWords, parseSpokenDigitGroups } from './numberWords.ts';
+import { normalizeQuickAddText, titleCaseColor, collapseSpaces } from './normalize';
+import { parseDigits, parseNumberWords, parseSpokenDigitGroups } from './numberWords';
 import {
   ALLOWED_STATUSES,
   type FieldValue,
   type QuickAddFieldKey,
   type UnresolvedSpan,
-} from './types.ts';
+} from './types';
 
 export type Proposal = {
   key: QuickAddFieldKey;
